@@ -9,9 +9,16 @@
   "scripts": {
     "build": "npm i && rollup -c && node rollup.node",
     "test": "jest --env=jsdom",
+    "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit' --passWithNoTests",
     "tdd": "jest --env=jsdom --watch",
-    "lint": "eslint -c .eslintrc.json **/*.js",
+    "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.{js}\"",
+    "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.{js}\"",
     "prepublishOnly": "npm run build"
+  },
+  "jest-junit": {
+    "outputDirectory": "test-results/jest",
+    "outputName": "results.xml",
+    "suitName": "google-optimize-service unit tests"
   },
   "husky": {
     "hooks": {
@@ -51,6 +58,7 @@
     "eslint": "^6.8.0",
     "husky": "^4.2.1",
     "jest": "^25.1.0",
+    "jest-junit": "^10.0.0",
     "rollup": "^1.31.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.2.0"

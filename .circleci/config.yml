@@ -1,26 +1,55 @@
-# JavaScript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
-version: 2
+# https://circleci.com/docs/2.1/language-javascript/
+version: 2.1
+commands:
+  setup:
+    steps:
+      - checkout
+      - run:
+          name: update npm
+          command: sudo npm install -g npm@latest
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+workflows:
+  version: 2
+  test:
+    when: always
+    jobs:
+      - lint
+      - test
 jobs:
+  lint:
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/google-optimize-service
+    steps:
+      - setup
+      - run:
+          name: create test-results-folder
+          command: mkdir -p test-results/eslint
+      - run:
+          name: lint
+          command: npm run lint:ci
+      - store_test_results:
+          path: test-results
+
   test:
     docker:
       - image: circleci/node:lts
     working_directory: ~/google-optimize-service
     steps:
-      - checkout
+      - setup
       - run:
-        name: update-npm
-        command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm test
-      - run: npm run lint
+          name: unit tests
+          command: npm run test:ci
+      - store_test_results:
+          path: test-results

@@ -106,3 +106,5 @@ dist
 # production
 lib/
 
+# test results
+test-results/
