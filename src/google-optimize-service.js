@@ -17,9 +17,13 @@ export const key = (newKey) => {
 };
 
 export const location = (newLocation) => {
-  if (newLocation
-    && 'search' in newLocation) {
-    config.location = newLocation;
+  if (newLocation) {
+    if ('search' in newLocation
+      && typeof newLocation.search === 'string') {
+      config.location = newLocation;
+    } else {
+      throw new TypeError('Invalid parameter. Expected newLocation to be object with string property "serach".');
+    }
   }
 
   return {

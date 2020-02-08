@@ -66,38 +66,89 @@ describe('google-optimize-service', () => {
   });
 
   describe('location', () => {
-    beforeEach(() => {
-      jest.resetModules();
-    });
-
-    it('returns the default location', () => {
-      expect(optimize.location()).toHaveProperty('search', '');
-    });
-
-    describe('and there is a window object', () => {
-      let locationMock;
-      beforeAll(() => {
-        locationMock = mockLocation();
+    describe('called without parameter', () => {
+      beforeEach(() => {
+        jest.resetModules();
       });
 
-      afterAll(() => {
-        locationMock.restore();
+      it('returns the default location', () => {
+        expect(optimize.location()).toHaveProperty('search', '');
       });
 
-      describe('with a location', () => {
-        beforeEach(() => {
-          optimize.discover();
+      describe('and there is a window object', () => {
+        let locationMock;
+        beforeAll(() => {
+          locationMock = mockLocation();
         });
 
-        it('returns the window.location.search object', () => {
-          expect(optimize.location()).toHaveProperty('search', '?variant=tooltip&utm_expid=1');
+        afterAll(() => {
+          locationMock.restore();
         });
 
-        describe('and window.location changes', () => {
+        describe('with a location', () => {
           beforeEach(() => {
-            window.location.search = '?variant=cursor&utm_expid=2';
-            expect(optimize.location()).toHaveProperty('search', '?variant=cursor&utm_expid=2');
+            optimize.discover();
           });
+
+          it('returns the window.location.search object', () => {
+            expect(optimize.location()).toHaveProperty('search', '?variant=tooltip&utm_expid=1');
+          });
+
+          describe('and window.location changes', () => {
+            beforeEach(() => {
+              window.location.search = '?variant=cursor&utm_expid=2';
+              expect(optimize.location()).toHaveProperty('search', '?variant=cursor&utm_expid=2');
+            });
+          });
+        });
+      });
+    });
+
+    describe('called with parameter', () => {
+      describe('object with string property search', () => {
+        let newLocation;
+        beforeEach(() => {
+          newLocation = optimize.location({
+            search: '?foo=bar'
+          });
+        });
+
+        it('sets and returns the new location', () => {
+          expect(newLocation).toHaveProperty('search', '?foo=bar');
+        });
+      });
+
+      describe('string', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.location.bind(optimize, 'foo')).toThrow(TypeError);
+        });
+      });
+
+      describe('boolean', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.location.bind(optimize, true)).toThrow(TypeError);
+        });
+      });
+
+      describe('number', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.location.bind(optimize, 69)).toThrow(TypeError);
+        });
+      });
+
+      describe('object without property search', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.location.bind(optimize, {
+            foo: 'bar'
+          })).toThrow(TypeError);
+        });
+      });
+
+      describe('object with non-string property search', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.location.bind(optimize, {
+            search: jest.fn()
+          })).toThrow(TypeError);
         });
       });
     });
