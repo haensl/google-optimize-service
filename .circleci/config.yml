@@ -34,6 +34,9 @@ jobs:
     steps:
       - setup
       - run:
+          name: create test-results-folder
+          command: mkdir -p test-results/eslint
+      - run:
           name: lint
           command: npm run lint:ci
       - store_test_results:
@@ -47,6 +50,6 @@ jobs:
       - setup
       - run:
           name: unit tests
-          command: npm test:ci
+          command: npm run test:ci
       - store_test_results:
           path: test-results
