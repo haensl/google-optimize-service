@@ -24,5 +24,11 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm test
-      - run: npm run lint
+      - run:
+          name: lint
+          command: npm run lint
+      - run:
+          name: unit tests
+          command: npm test:ci
+      - store_test_results:
+          path: test-results
