@@ -3,3 +3,4 @@
 *.md
 jest.config.js
 rollup.*
+src/

@@ -116,6 +116,7 @@ jobs:
           name: test node.js module
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
+            pwd
             node node.test.js
 
   bundle-test-esm-js:
