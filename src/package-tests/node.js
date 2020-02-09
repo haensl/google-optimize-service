@@ -39,5 +39,6 @@ assert.equal(
 );
 assert.equal(
   store['test-app'],
-  'foo'
+  '{"1":{"experimentId":"1","variant":"tooltip"}}',
+  'storage is broken!'
 );
