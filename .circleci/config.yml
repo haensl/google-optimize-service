@@ -114,9 +114,9 @@ jobs:
       - bundle-test-setup
       - run:
           name: test node.js module
+          working_directory: /tmp/test-app
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
-            pwd
             node node.test.js
 
   bundle-test-esm-js:
@@ -125,33 +125,40 @@ jobs:
     working_directory: /tmp
     steps:
       - bundle-test-setup
-      - working_directory: /tmp/test-app
       - run:
           name: copy test
+          working_directory: /tmp/test-app
           command: |
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
+          working_directory: /tmp/test-app
           command: |
             pwd
             ls -la
             cat package.json
       - run:
+          working_directory: /tmp/test-app
           name: update npm
           command: sudo npm install -g npm@latest
       - restore_cache:
+          working_directory: /tmp/test-app
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
       - run:
+          working_directory: /tmp/test-app
           name: install dependencies
           command: npm install
       - save_cache:
+          working_directory: /tmp/test-app
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
+          working_directory: /tmp/test-app
           name: test esm.js module
           command: |
             npm test
       - store_test_results:
+          working_directory: /tmp/test-app
           path: test-results
