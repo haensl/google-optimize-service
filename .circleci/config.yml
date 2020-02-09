@@ -149,6 +149,10 @@ jobs:
           working_directory: /tmp/test-app
           name: install dependencies
           command: npm install
+      - run:
+          name: install module
+          command: |
+            npm i -S ~/google-optimize-service
       - save_cache:
           working_directory: /tmp/test-app
           paths:
