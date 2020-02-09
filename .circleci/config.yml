@@ -129,6 +129,10 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
+          command: |
+            ls -la
+            cat pacakage.json
+      - run:
           name: update npm
           command: sudo npm install -g npm@latest
       - restore_cache:
