@@ -26,6 +26,8 @@ workflows:
     jobs:
       - lint
       - test
+      - bundle
+
 jobs:
   lint:
     docker:
@@ -53,3 +55,21 @@ jobs:
           command: npm run test:ci
       - store_test_results:
           path: test-results
+
+  bundle:
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/google-optimize-service
+    requires:
+      - lint
+      - test
+    steps:
+      - setup
+      - run:
+          name: bundle
+          environment:
+            NODE_ENV: 'production'
+            command: npm run build
+      - store_artifacts:
+          path: lib
+
