@@ -82,18 +82,21 @@ jobs:
       - store_artifacts:
           path: lib
       - persist_to_workspace:
-          root: .
+          root: ./
           paths:
             - lib
+            - package.json
 
   bundle-test:
     docker:
       - image: circleci/node:lts
-    working_directory: ~
+    working_directory: /tmp
     steps:
       - run: |
           ls -la
+          ls -la ~
       - attach_workspace:
-          at: ~/google-optimize-service/lib
+          at: ~/google-optimize-service
       - run: |
           ls -la
+          ls -la ~
