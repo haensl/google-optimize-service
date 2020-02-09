@@ -82,7 +82,9 @@ jobs:
       - store_artifacts:
           path: lib
       - persist_to_workspace:
-          root: lib
+          root: .
+          paths:
+            - lib
 
   bundle-test:
     docker:
