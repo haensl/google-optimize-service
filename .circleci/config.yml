@@ -130,8 +130,9 @@ jobs:
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
           command: |
+            pwd
             ls -la
-            cat pacakage.json
+            cat package.json
       - run:
           name: update npm
           command: sudo npm install -g npm@latest
