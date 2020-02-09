@@ -17,8 +17,8 @@ const config = {
 optimize.configure(config);
 const experiment = optimize.get();
 console.info(`Node.js v${process.versions.node}`);
-console.info('configuration', config);
-console.info('experiment', experiment);
+console.info('configuration', JSON.stringify(config, null, 2));
+console.info('experiment', JSON.stringify(experiment, null, 2));
 assert(
   'experimentId' in experiment,
   'experiment does not contain experimentId!'
@@ -38,6 +38,6 @@ assert.equal(
   `variant does not match! Expected: 'tooltip'. Actual: ${experiment.variant}`
 );
 assert.equal(
-  store.getItem('test-app'),
+  store['test-app'],
   'foo'
 );
