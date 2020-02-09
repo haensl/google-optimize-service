@@ -42,3 +42,5 @@ assert.equal(
   '{"1":{"experimentId":"1","variant":"tooltip"}}',
   'storage is broken!'
 );
+console.info('recognition and persistance working.');
+console.info(':)');
