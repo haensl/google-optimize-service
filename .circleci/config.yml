@@ -129,9 +129,19 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
+          name: update npm
+          command: sudo npm install -g npm@latest
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
           name: install dependencies
-          command: |
-            npm i
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: test esm.js module
           command: |
