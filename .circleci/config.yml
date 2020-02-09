@@ -20,7 +20,12 @@ commands:
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
           name: extract version
-          command: export VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
+          command: |
+            echo 'export VERSION=$(head -n1 CHANGELOG.md | grep -o \'\([0-9]\+\.\)\{2\}[0-9]\+\')'
+      - run:
+          name: verify version
+          command: |
+            echo "version: ${VERSION}"
 
 workflows:
   version: 2
