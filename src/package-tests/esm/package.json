@@ -5,6 +5,11 @@
   "scripts": {
     "test": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit'"
   },
+  "babel": {
+    "presets": [
+      [ "@babel/preset-env" ]
+    ]
+  },
   "jest-junit": {
     "outputDirectory": "test-results/jest",
     "outputName": "results.xml",
