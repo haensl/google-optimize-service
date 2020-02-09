@@ -8,8 +8,8 @@
   "jsdelivr": "lib/google-optimize-service.min.js",
   "scripts": {
     "build": "npm i && rollup -c",
-    "test": "jest --env=jsdom",
-    "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit' --passWithNoTests",
+    "test": "jest --testPathIgnorePatterns=/package-tests/ --env=jsdom",
+    "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --testPathIgnorePatterns=/package-tests/ --reporters='jest-junit' --passWithNoTests",
     "tdd": "jest --env=jsdom --watch",
     "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
     "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\"",

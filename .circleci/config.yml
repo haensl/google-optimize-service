@@ -112,5 +112,24 @@ jobs:
       - run:
           name: test node.js module
           command: |
-            cp ~/google-optimize-service/src/package-tests/node.js ./node-test.js
-            node node-test.js
+            cp ~/google-optimize-service/src/package-tests/node.test.js ./
+            node node.test.js
+
+  bundle-test-esm-js:
+    docker:
+      - image: circleci/node:lts
+    working_directory: /tmp
+    steps:
+      - bundle-test-setup
+      - run:
+          name: copy test
+          command: |
+            cp ~/google-optimize-service/src/package-tests/esm.test.js ./
+      - run:
+          name: install jest
+          command: |
+            npm i -S jest
+      - run:
+          name: test esm.js module
+          command: |
+            jest --runInBand --no-cache --ci
