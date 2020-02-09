@@ -1,6 +1,6 @@
 {
   "name": "google-optimize-service",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Handy universal service abstraction around Google Optimize.",
   "main": "lib/google-optimize-service.node.js",
   "module": "lib/google-optimize-service.esm.js",
