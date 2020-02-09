@@ -125,6 +125,7 @@ jobs:
     working_directory: /tmp
     steps:
       - bundle-test-setup
+      - working_directory: /tmp/test-app
       - run:
           name: copy test
           command: |
