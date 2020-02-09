@@ -135,4 +135,4 @@ jobs:
       - run:
           name: test esm.js module
           command: |
-            ./node_modules/bin/jest --runInBand --no-cache --ci
+            ./node_modules/.bin/jest --runInBand --no-cache --ci
