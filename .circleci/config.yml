@@ -23,10 +23,7 @@ commands:
           command: |
             VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
             echo "export VERSION=${VERSION}" >> $BASH_ENV
-      - run:
-          name: verify version
-          command: |
-            echo "version: ${VERSION}"
+            echo "building version: ${VERSION}"
 
 workflows:
   version: 2
@@ -39,6 +36,9 @@ workflows:
           requires:
             - lint
             - test
+      - bundle-test:
+          requires:
+            - bundle
 
 jobs:
   lint:
@@ -81,5 +81,19 @@ jobs:
           command: npm run build
       - store_artifacts:
           path: lib
-          destination: "google-optimize-service.${VERSION}-branch:${CIRCLE_BRANCH}"
+      - persist_to_workspace:
+          root: lib
+          paths:
+            - *
 
+  bundle-test:
+    docker:
+      - image: circleci/node:lts
+    working_directory: /tmp
+    steps:
+      - attach_workspace:
+          at: /lib
+      - run: |
+          ls -la /lib
+          ls -la /tmp
+          cat /lib/google-optimize-service.esm.js
