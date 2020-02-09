@@ -29,6 +29,7 @@ commands:
       - attach_workspace:
           at: ~/google-optimize-service
       - run:
+          working-directory: /tmp
           name: create test application
           command: |
             mkdir test-app
@@ -36,6 +37,7 @@ commands:
             npm init -y
       - run:
           name: install module
+          working-directory: /tmp/test-app
           command: |
             npm i -S ~/google-optimize-service
 
@@ -122,25 +124,21 @@ jobs:
   bundle-test-esm-js:
     docker:
       - image: circleci/node:lts
-    working_directory: /tmp
+    working_directory: /tmp/test-app
     steps:
       - bundle-test-setup
       - run:
           name: copy test
-          working_directory: /tmp/test-app
           command: |
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
-          working_directory: /tmp/test-app
           name: update npm
           command: sudo npm install -g npm@latest
       - restore_cache:
-          working_directory: /tmp/test-app
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
       - run:
-          working_directory: /tmp/test-app
           name: install dependencies
           command: npm install
       - run:
@@ -148,21 +146,17 @@ jobs:
           command: |
             npm i -S ~/google-optimize-service
       - run:
-          working_directory: /tmp/test-app
           command: |
             pwd
             ls -la
             cat package.json
       - save_cache:
-          working_directory: /tmp/test-app
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
-          working_directory: /tmp/test-app
           name: test esm.js module
           command: |
             npm test
       - store_test_results:
-          working_directory: /tmp/test-app
           path: test-results
