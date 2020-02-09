@@ -101,6 +101,6 @@ jobs:
             cd test-app
             npm init -y
       - run:
-          name: install modules
+          name: install module
           command: |
             npm i -S ~/google-optimize-service
