@@ -24,6 +24,21 @@ commands:
             VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
             echo "export VERSION=${VERSION}" >> $BASH_ENV
             echo "building version: ${VERSION}"
+  bundle-test-setup:
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - run:
+          name: create test application
+          command: |
+            mkdir test-app
+            cd test-app
+            npm init -y
+      - run:
+          name: install module
+          command: |
+            npm i -S ~/google-optimize-service
+
 
 workflows:
   version: 2
@@ -36,7 +51,7 @@ workflows:
           requires:
             - lint
             - test
-      - bundle-test:
+      - bundle-test-node-js:
           requires:
             - bundle
 
@@ -88,23 +103,12 @@ jobs:
             - src/package-tests
             - package.json
 
-  bundle-test:
+  bundle-test-node-js:
     docker:
       - image: circleci/node:lts
     working_directory: /tmp
     steps:
-      - attach_workspace:
-          at: ~/google-optimize-service
-      - run:
-          name: create test application
-          command: |
-            mkdir test-app
-            cd test-app
-            npm init -y
-      - run:
-          name: install module
-          command: |
-            npm i -S ~/google-optimize-service
+      - bundle-test-setup
       - run:
           name: test node.js module
           command: |
