@@ -13,7 +13,7 @@
   "jest-junit": {
     "outputDirectory": "test-results/jest",
     "outputName": "results.xml",
-    "suitName": "google-optimize-service unit tests"
+    "suitName": "google-optimize-service esm module tests"
   },
   "keywords": [],
   "author": "",

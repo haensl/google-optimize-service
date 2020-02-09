@@ -5,7 +5,7 @@ describe('esm module test', () => {
   let store;
   let experiment;
 
-  beforeEach(() => {
+  beforeAll(() => {
     store = {};
     config = {
       autopersist: true,
@@ -24,27 +24,27 @@ describe('esm module test', () => {
     optimize.configure(config);
     experiment = optimize.get();
     console.info('experiment', JSON.stringify(experiment, null, 2));
+  });
 
-    it('returns an experiment with experimentId', () => {
-      expect('experimentId' in experiment).toBe(true);
-    });
+  it('returns an experiment with experimentId', () => {
+    expect('experimentId' in experiment).toBe(true);
+  });
 
-    it('returns an experiment with variant', () => {
-      expect('variant' in experiment).toBe(true);
-    });
+  it('returns an experiment with variant', () => {
+    expect('variant' in experiment).toBe(true);
+  });
 
-    it('returns an experiment with experimentId "1"', () => {
-      expect(experiment.experimentId).toEqual('1');
-    });
+  it('returns an experiment with experimentId "1"', () => {
+    expect(experiment.experimentId).toEqual('1');
+  });
 
-    it('returns an experiment with variant "tooltip"', () => {
-      expect(experiment.variant).toEqual('tooltip');
-    });
+  it('returns an experiment with variant "tooltip"', () => {
+    expect(experiment.variant).toEqual('tooltip');
+  });
 
-    it('persists the experiment to storage', () => {
-      expect(store['test-app']).toEqual(
-        '{"1":{"experimentId":"1","variant":"tooltip"}}'
-      );
-    });
+  it('persists the experiment to storage', () => {
+    expect(store['test-app']).toEqual(
+      '{"1":{"experimentId":"1","variant":"tooltip"}}'
+    );
   });
 });

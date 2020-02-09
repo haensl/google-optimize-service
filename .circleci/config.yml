@@ -111,12 +111,11 @@ jobs:
   bundle-test-node-js:
     docker:
       - image: circleci/node:lts
-    working_directory: /tmp
+    working_directory: /tmp/test-app
     steps:
       - bundle-test-setup
       - run:
           name: test node.js module
-          working_directory: /tmp/test-app
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
