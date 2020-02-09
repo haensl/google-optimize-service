@@ -133,6 +133,10 @@ jobs:
           command: |
             npm i -S jest
       - run:
+          name: generate jest configuration
+          command: |
+            echo 'module.exports = {};' >> ./jest.config.js
+      - run:
           name: test esm.js module
           command: |
             ./node_modules/.bin/jest --runInBand --no-cache --ci
