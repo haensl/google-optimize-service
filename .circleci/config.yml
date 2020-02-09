@@ -168,10 +168,11 @@ jobs:
           name: test esm.js module
           command: |
             npm test
+      - store_test_results:
+          path: test-results
       - run:
           name: gather bundle information
           command: |
-            mkdir test-results/bundle
             ls -la node_modules/google-optimize-service > test-results/bundle/bundle
-      - store_test_results:
-          path: test-results
+      - store_artifacts:
+          path: test-results/bundle/bundle
