@@ -7,12 +7,27 @@ export const storagePreferences = {
 
 const config = {
   autopersist: true,
+  fields: [
+    'variant'
+  ],
   key: 'optimize',
   location: {
     search: ''
   },
   storage: null,
   storagePreference: storagePreferences.localStorage
+};
+
+export const fields = (newFields) => {
+  if (Array.isArray(newFields)
+    && newFields.reduce((isString, val) =>
+      isString && typeof val === 'string', true)) {
+    config.fields = newFields.slice();
+  } else if (newFields) {
+    throw new TypeError('Invalid parameter. Expected newFields to be Array of strings.');
+  }
+
+  return config.fields.slice();
 };
 
 export const autopersist = (shouldAutopersist) => {
@@ -86,45 +101,37 @@ export const configure = (opts) => {
     throw new TypeError('Invalid parameter. Expected opts to be object.');
   }
 
-  if ('autopersist' in opts) {
-    try {
-      autopersist(opts.autopersist);
-    } catch(e) {
-      throw new TypeError('Invalid option: autopersist.', e.message);
-    }
-  }
-
-  if ('key' in opts) {
-    try {
-      key(opts.key);
-    } catch (e) {
-      throw new TypeError('Invalid option: key.', e.message);
-    }
-  }
-
-  if ('location' in opts) {
-    try {
-      location(opts.location);
-    } catch (e) {
-      throw new TypeError('Invalid option: location.', e.message);
-    }
-  }
-
-  if ('storage' in opts) {
-    try {
-      storage(opts.storage);
-    } catch (e) {
-      throw new TypeError('Invalid option: storage.', e.message);
-    }
-  }
-
-  if ('storagePreference' in opts) {
-    try {
-      storagePreference(opts.storagePreference);
-    } catch (e) {
-      throw new TypeError('Invalid option: storagePreference.', e.message);
-    }
-  }
+  Object.keys(config)
+    .forEach((option) => {
+      if (option in opts) {
+        try {
+          switch (option) {
+            case 'autopersist':
+              autopersist(opts.autopersist);
+              break;
+            case 'key':
+              key(opts.key);
+              break;
+            case 'location':
+              location(opts.location);
+              break;
+            case 'storage':
+              storage(opts.storage);
+              break;
+            case 'storagePreference':
+              storagePreference(opts.storagePreference);
+              break;
+            case 'fields':
+              fields(opts.fields);
+              break;
+            default:
+              break;
+          }
+        } catch (e) {
+          throw new TypeError(`Invalid option: ${option}.`, e.message);
+        }
+      }
+    });
 };
 
 export const fromQuery = () => {
@@ -135,10 +142,6 @@ export const fromQuery = () => {
       config.location.search.replace(/^\?/, '')
     );
 
-    if ('variant' in query) {
-      experiment.variant = query.variant;
-    }
-
     if ('utm_expid' in query) {
       experiment.experimentId = query.utm_expid;
     }
@@ -146,6 +149,12 @@ export const fromQuery = () => {
     if ('utm_referrer' in query) {
       experiment.referrer = query.utm_referrer;
     }
+
+    (config.fields || []).forEach((field) => {
+      if (field in query) {
+        experiment[field] = query[field];
+      }
+    });
   }
 
   if (Object.keys(experiment).length) {
@@ -257,6 +266,7 @@ export default (() => {
     configure,
     currentExperimentId,
     discover,
+    fields,
     fromQuery,
     get,
     key,

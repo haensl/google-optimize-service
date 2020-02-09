@@ -526,6 +526,40 @@ describe('google-optimize-service', () => {
         });
       });
     });
+
+    describe('called with fields option', () => {
+      describe('valid fields', () => {
+        let _fields;
+
+        beforeEach(() => {
+          _fields = optimize.fields();
+          optimize.configure({
+            fields: ['foo', 'bar']
+          });
+        });
+
+        afterEach(() => {
+          optimize.fields(_fields);
+        });
+
+        it('sets the fields', () => {
+          expect(optimize.fields()).toEqual(
+            expect.arrayContaining([
+              'foo',
+              'bar'
+            ])
+          );
+        });
+      });
+
+      describe('invalid fields', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.configure.bind(optimize, {
+            fields: jest.fn()
+          })).toThrow(TypeError);
+        });
+      });
+    });
   });
 
   describe('preventFlicker()', () => {
@@ -764,6 +798,35 @@ describe('google-optimize-service', () => {
           expect(experiments).toEqual(mockExperiments);
         });
       });
+
+      describe('with custom fields', () => {
+        let _fields;
+
+        beforeEach(() => {
+          locationMock = mockLocation({
+            search: '?utm_expid=69&foo=bar&rock=roll'
+          });
+          optimize.location(locationMock.mock);
+          _fields = optimize.fields();
+          optimize.fields(['foo', 'rock']);
+          experiment = optimize.get();
+        });
+
+        afterEach(() => {
+          locationMock.restore();
+          optimize.fields(_fields);
+        });
+
+        it('returns the experiment with custom fields', () => {
+          expect(experiment).toEqual(
+            expect.objectContaining({
+              experimentId: '69',
+              foo: 'bar',
+              rock: 'roll'
+            })
+          );
+        });
+      });
     });
 
     describe('called with experimentId', () => {
@@ -819,7 +882,7 @@ describe('google-optimize-service', () => {
               expect(localStorageMock.mock.setItem)
                 .toHaveBeenCalledWith(
                   'optimize',
-                  '{"1":{"variant":"tooltip","experimentId":"1"},"69":{"variant":"doggy","experimentId":"69"}}'
+                  '{"1":{"variant":"tooltip","experimentId":"1"},"69":{"experimentId":"69","variant":"doggy"}}'
                 );
             });
           });
@@ -1012,7 +1075,7 @@ describe('google-optimize-service', () => {
         expect(localStorageMock.mock.setItem)
           .toHaveBeenCalledWith(
             optimize.key(),
-            '{"variant":"tooltip","experimentId":"1"}'
+            '{"experimentId":"1","variant":"tooltip"}'
           );
       });
     });
@@ -1036,6 +1099,84 @@ describe('google-optimize-service', () => {
           optimize.key(),
           '{"69":{"variant":"doggy","experimentId":"69"}}'
         );
+      });
+    });
+  });
+
+  describe('fields()', () => {
+    describe('called without parameter', () => {
+      it('returns the default fields', () => {
+        expect(optimize.fields()).toEqual(
+          expect.arrayContaining(['variant'])
+        );
+      });
+    });
+
+    describe('called with parameter', () => {
+      describe('Array of strings', () => {
+        it('sets and returns the newFields', () => {
+          expect(optimize.fields(['foo', 'bar'])).toEqual(
+            expect.arrayContaining([
+              'foo',
+              'bar'
+            ])
+          );
+        });
+      });
+
+      describe('Array of not only strings', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(optimize, [
+            1,
+            false,
+            {}
+          ])).toThrow(TypeError);
+        });
+      });
+
+      describe('string', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(
+            optimize,
+            'foo'
+          )).toThrow(TypeError);
+        });
+      });
+
+      describe('number', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(
+            optimize,
+            69
+          )).toThrow(TypeError);
+        });
+      });
+
+      describe('boolean', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(
+            optimize,
+            true
+          )).toThrow(TypeError);
+        });
+      });
+
+      describe('object', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(
+            optimize,
+            { foo: 'bar' }
+          )).toThrow(TypeError);
+        });
+      });
+
+      describe('function', () => {
+        it('throws a TypeError', () => {
+          expect(optimize.fields.bind(
+            optimize,
+            jest.fn()
+          )).toThrow(TypeError);
+        });
       });
     });
   });
