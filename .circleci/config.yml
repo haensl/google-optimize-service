@@ -176,6 +176,6 @@ jobs:
           name: gather bundle information
           command: |
             mkdir -p test-results/bundle
-            ls -la node_modules/google-optimize-service > test-results/bundle/bundle
+            echo $(ls -la node_modules/google-optimize-service) > test-results/bundle/bundle
       - store_artifacts:
           path: test-results/bundle/bundle
