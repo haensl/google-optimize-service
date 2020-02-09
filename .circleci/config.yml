@@ -123,13 +123,15 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
+      - store_test_results:
+          path: test-results
       - run:
           name: gather bundle information
           command: |
-            mkdir test-results/bundle
+            mkdir -p test-results/bundle
             ls -la node_modules/google-optimize-service > test-results/bundle/bundle
-      - store_test_results:
-          path: test-results
+      - store_artifacts:
+          path: test-results/bundle/bundle
 
   bundle-test-esm-js:
     docker:
@@ -173,6 +175,7 @@ jobs:
       - run:
           name: gather bundle information
           command: |
+            mkdir -p test-results/bundle
             ls -la node_modules/google-optimize-service > test-results/bundle/bundle
       - store_artifacts:
           path: test-results/bundle/bundle
