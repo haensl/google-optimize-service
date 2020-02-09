@@ -75,5 +75,5 @@ jobs:
             command: npm run build
       - store_artifacts:
           path: lib
-          destination: google-optimize-service.${VERSION}
+          destination: "google-optimize-service.${VERSION}"
 
