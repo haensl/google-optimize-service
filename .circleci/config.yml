@@ -9,15 +9,15 @@ commands:
           command: sudo npm install -g npm@latest
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - google-optimize-service-dependencies-{{ checksum "package.json" }}
+            - google-optimize-service-dependencies-
       - run:
           name: install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: google-optimize-service-dependencies-{{ checksum "package.json" }}
       - run:
           name: extract version
           command: |
@@ -135,8 +135,8 @@ jobs:
           command: sudo npm install -g npm@latest
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
+            - google-optimize-service-esm-module-test-dependencies-
       - run:
           name: install dependencies
           command: npm install
@@ -152,7 +152,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
       - run:
           name: test esm.js module
           command: |
