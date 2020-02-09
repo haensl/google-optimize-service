@@ -18,6 +18,9 @@ commands:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: extract version
+          command: export VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
 
 workflows:
   version: 2
@@ -26,7 +29,10 @@ workflows:
     jobs:
       - lint
       - test
-      - bundle
+      - bundle:
+          requires:
+            - lint
+            - test
 
 jobs:
   lint:
@@ -60,9 +66,6 @@ jobs:
     docker:
       - image: circleci/node:lts
     working_directory: ~/google-optimize-service
-    requires:
-      - lint
-      - test
     steps:
       - setup
       - run:
@@ -72,4 +75,5 @@ jobs:
             command: npm run build
       - store_artifacts:
           path: lib
+          destination: google-optimize-service.${VERSION}
 
