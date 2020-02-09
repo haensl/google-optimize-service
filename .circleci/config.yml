@@ -102,9 +102,9 @@ jobs:
       - store_artifacts:
           path: lib
       - persist_to_workspace:
-          root: ./
+          root: ../
           paths:
-            - './!(node_modules)'
+            - 'google-optimize-service/!(node_modules)/*'
 
   bundle-test-node-js:
     docker:
