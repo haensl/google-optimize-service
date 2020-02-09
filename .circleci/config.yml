@@ -132,12 +132,6 @@ jobs:
             cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
           working_directory: /tmp/test-app
-          command: |
-            pwd
-            ls -la
-            cat package.json
-      - run:
-          working_directory: /tmp/test-app
           name: update npm
           command: sudo npm install -g npm@latest
       - restore_cache:
@@ -145,6 +139,12 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
+      - run:
+          working_directory: /tmp/test-app
+          command: |
+            pwd
+            ls -la
+            cat package.json
       - run:
           working_directory: /tmp/test-app
           name: install dependencies
