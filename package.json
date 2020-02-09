@@ -1,6 +1,6 @@
 {
   "name": "google-optimize-service",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Handy universal service abstraction around Google Optimize.",
   "main": "lib/google-optimize-service.node.js",
   "module": "lib/google-optimize-service.esm.js",
@@ -11,8 +11,8 @@
     "test": "jest --env=jsdom",
     "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit' --passWithNoTests",
     "tdd": "jest --env=jsdom --watch",
-    "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.{js}\"",
-    "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.{js}\"",
+    "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
+    "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\"",
     "prepublishOnly": "npm run build"
   },
   "jest-junit": {
@@ -22,8 +22,9 @@
   },
   "husky": {
     "hooks": {
-      "prepush": "npm run lint && npm test",
-      "precommit": "npm run lint && npm test"
+      "pre-push": "npm run lint && npm test",
+      "pre-commit": "npm run lint && npm test",
+      "post-pull": "npm i"
     }
   },
   "repository": {
