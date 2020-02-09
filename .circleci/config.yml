@@ -96,6 +96,4 @@ jobs:
       - attach_workspace:
           at: ~/google-optimize-service/lib
       - run: |
-          ls -la /lib
-          ls -la /tmp
-          cat /lib/google-optimize-service.esm.js
+          ls -la
