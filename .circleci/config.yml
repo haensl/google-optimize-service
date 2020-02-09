@@ -102,9 +102,15 @@ jobs:
       - store_artifacts:
           path: lib
       - persist_to_workspace:
-          root: ../
+          root: ./
           paths:
-            - google-optimize-service/**/*
+            - CHANGELOG.md
+            - src
+            - lib
+            - README.md
+            - LICENSE
+            - package.json
+            - package-lock.json
 
   bundle-test-node-js:
     docker:

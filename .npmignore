@@ -4,3 +4,4 @@
 jest.config.js
 rollup.*
 src/
+test-results/
