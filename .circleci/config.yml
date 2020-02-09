@@ -83,8 +83,6 @@ jobs:
           path: lib
       - persist_to_workspace:
           root: lib
-          paths:
-            - '*'
 
   bundle-test:
     docker:
