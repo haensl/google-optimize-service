@@ -104,7 +104,7 @@ jobs:
       - persist_to_workspace:
           root: ../
           paths:
-            - google-optimize-service
+            - google-optimize-service/**/*
 
   bundle-test-node-js:
     docker:
