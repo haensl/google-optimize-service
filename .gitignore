@@ -108,3 +108,6 @@ lib/
 
 # test results
 test-results/
+
+# OSX
+.DS_Store

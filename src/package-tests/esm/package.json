@@ -1,0 +1,24 @@
+{
+  "name": "google-optimize-service: esm module test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "esm.test.js",
+  "scripts": {
+    "test": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit'"
+  },
+  "jest-junit": {
+    "outputDirectory": "test-results/jest",
+    "outputName": "results.xml",
+    "suitName": "google-optimize-service unit tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0",
+    "jest-junit": "^10.0.0"
+  }
+}

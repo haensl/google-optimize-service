@@ -115,7 +115,7 @@ jobs:
       - run:
           name: test node.js module
           command: |
-            cp ~/google-optimize-service/src/package-tests/node.test.js ./
+            cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
 
   bundle-test-esm-js:
@@ -127,16 +127,14 @@ jobs:
       - run:
           name: copy test
           command: |
-            cp ~/google-optimize-service/src/package-tests/esm.test.js ./
+            cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
-          name: install jest
+          name: install dependencies
           command: |
-            npm i -S jest
-      - run:
-          name: generate jest configuration
-          command: |
-            echo 'module.exports = {};' >> ./jest.config.js
+            npm i
       - run:
           name: test esm.js module
           command: |
-            ./node_modules/.bin/jest --runInBand --no-cache --ci
+            npm test
+      - store_test_results:
+          path: test-results
