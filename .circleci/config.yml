@@ -54,6 +54,9 @@ workflows:
       - bundle-test-node-js:
           requires:
             - bundle
+      - bundle-test-esm-js:
+          requires:
+            - bundle
 
 jobs:
   lint:
