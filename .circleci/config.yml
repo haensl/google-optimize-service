@@ -92,11 +92,15 @@ jobs:
       - image: circleci/node:lts
     working_directory: /tmp
     steps:
-      - run: |
-          ls -la
-          ls -la ~
       - attach_workspace:
           at: ~/google-optimize-service
-      - run: |
-          ls -la
-          ls -la ~
+      - run:
+          name: create test application
+          command: |
+            mkdir test-app
+            cd test-app
+            npm init -y
+      - run:
+          name: install modules
+          command: |
+            npm i -S ~/google-optimize-service
