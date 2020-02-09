@@ -141,18 +141,18 @@ jobs:
             - v1-dependencies-
       - run:
           working_directory: /tmp/test-app
-          command: |
-            pwd
-            ls -la
-            cat package.json
-      - run:
-          working_directory: /tmp/test-app
           name: install dependencies
           command: npm install
       - run:
           name: install module
           command: |
             npm i -S ~/google-optimize-service
+      - run:
+          working_directory: /tmp/test-app
+          command: |
+            pwd
+            ls -la
+            cat package.json
       - save_cache:
           working_directory: /tmp/test-app
           paths:
