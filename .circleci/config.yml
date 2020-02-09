@@ -89,10 +89,12 @@ jobs:
   bundle-test:
     docker:
       - image: circleci/node:lts
-    working_directory: /tmp
+    working_directory: ~
     steps:
+      - run: |
+          ls -la
       - attach_workspace:
-          at: /lib
+          at: ~/google-optimize-service/lib
       - run: |
           ls -la /lib
           ls -la /tmp
