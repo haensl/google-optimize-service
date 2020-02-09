@@ -85,6 +85,7 @@ jobs:
           root: ./
           paths:
             - lib
+            - src/package-tests
             - package.json
 
   bundle-test:
@@ -104,3 +105,8 @@ jobs:
           name: install module
           command: |
             npm i -S ~/google-optimize-service
+      - run:
+          name: test node.js module
+          command: |
+            cp ~/google-optimize-service/src/package-tests/node.js ./node-test.js
+            node node-test.js
