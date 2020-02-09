@@ -77,7 +77,7 @@ jobs:
           name: bundle
           environment:
             NODE_ENV: 'production'
-            command: npm run build
+          command: npm run build
       - store_artifacts:
           path: lib
           destination: "google-optimize-service.${VERSION}"
