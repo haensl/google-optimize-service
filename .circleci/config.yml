@@ -62,6 +62,19 @@ commands:
           command: |
             npm i -S google-optimize-service@${VERSION}
 
+  package-information:
+    steps:
+      - run:
+          name: install tree
+          command: sudo apt-get -y install tree
+      - run:
+          name: gather bundle information
+          command: |
+            npm info google-optimize-service@${VERSION} > ./bundle.info
+            tree -s node_modules/google-optimize-service >> ./bundle.info
+      - store_artifacts:
+          path: bundle.info
+
 workflows:
   version: 2
   default:
@@ -80,6 +93,9 @@ workflows:
           requires:
             - bundle
       - package-test-node-js:
+          requires:
+            - bundle
+      - package-test-esm-js:
           requires:
             - bundle
       - publish:
@@ -218,11 +234,41 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
+      - package-information
+
+  package-test-esm-js:
+    docker:
+      - image: circleci/node:lts
+    working_directory: /tmp/test-app
+    steps:
+      - package-test-setup
       - run:
-          name: install tree
-          command: sudo apt-get -y install tree
+          name: copy test
+          command: |
+            cp ~/google-optimize-service/src/package-tests/esm/* ./
       - run:
-          name: gather bundle information
-          command: tree -s node_modules/google-optimize-service > ./bundle.info
-      - store_artifacts:
-          path: bundle.info
+          name: update npm
+          command: sudo npm install -g npm@latest
+      - restore_cache:
+          keys:
+            - google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
+            - google-optimize-service-esm-module-test-dependencies-
+      - run:
+          name: install dependencies
+          command: npm install
+      - run:
+          name: install module
+          command: |
+            npm i -S google-optimize-service@${VERSION}
+      - save_cache:
+          paths:
+            - node_modules
+          key: google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: test esm.js module
+          command: |
+            npm test
+      - store_test_results:
+          path: test-results
+      - package-information
+
