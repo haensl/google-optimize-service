@@ -1,5 +1,6 @@
 import ascii from 'rollup-plugin-ascii';
 import node from 'rollup-plugin-node-resolve';
+import builtins from 'rollup-plugin-node-builtins';
 import { terser } from 'rollup-plugin-terser';
 import babel from 'rollup-plugin-babel';
 import * as pkg from './package.json';
@@ -10,8 +11,22 @@ export default [
   {
     input: 'src/google-optimize-service',
     plugins: [
+      builtins(),
       babel({
-        exclude: 'node_modules/**'
+        babelrc: false,
+        exclude: 'node_modules/**',
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                browsers: [
+                  'defaults'
+                ]
+              }
+            }
+          ]
+        ]
       }),
       node(),
       ascii()
@@ -28,8 +43,22 @@ export default [
   {
     input: 'src/google-optimize-service',
     plugins: [
+      builtins(),
       babel({
-        exclude: 'node_modules/**'
+        babelrc: false,
+        exclude: 'node_modules/**',
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                browsers: [
+                  'defaults'
+                ]
+              }
+            }
+          ]
+        ]
       }),
       node(),
       ascii(),
@@ -50,8 +79,20 @@ export default [
   {
     input: 'src/google-optimize-service',
     plugins: [
+      builtins(),
       babel({
-        exclude: 'node_modules/**'
+        babelrc: false,
+        exclude: 'node_modules/**',
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              targets: {
+                esmodules: true
+              }
+            }
+          ]
+        ]
       }),
       node(),
       ascii()
@@ -61,6 +102,24 @@ export default [
       banner: copyright,
       file: 'lib/google-optimize-service.esm.js',
       format: 'esm',
+      indent: false,
+      name: pkg.name
+    }
+  },
+  {
+    input: 'src/google-optimize-service',
+    external: [
+      'querystring'
+    ],
+    plugins: [
+      node(),
+      ascii()
+    ],
+    output: {
+      extend: true,
+      banner: copyright,
+      file: 'lib/google-optimize-service.node.js',
+      format: 'cjs',
       indent: false,
       name: pkg.name
     }
