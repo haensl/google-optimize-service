@@ -1,15 +1,37 @@
 # https://circleci.com/docs/2.1/language-javascript/
 version: 2.1
 commands:
-  extract-version:
+  extract-changelog-version:
     steps:
       - run:
-          name: extract version
+          name: extract changelog version
           working_directory: ~/google-optimize-service
           command: |
             VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
             echo "export VERSION=${VERSION}" >> $BASH_ENV
-            echo "building version: ${VERSION}"
+            echo "export CHANGELOG_VERSION=${VERSION}" >> $BASH_ENV
+            echo "changelog version: ${VERSION}"
+
+  extract-package-json-version:
+    steps:
+      - run:
+          name: extract package.json version
+          working_directory: ~/google-optimize-service
+          run: |
+            PACKAGE_JSON_VERSION=$(node -e "console.info(require('./package').version)")
+            echo "export PACKAGE_JSON_VERSION=${PACKAGE_JSON_VERSION}" >> $BASH_ENV
+            echo "package.json version: ${PACKAGE_JSON_VERSION}"
+
+  extract-published-version:
+    steps:
+      - run:
+        name: extract latest published version
+        working_directory: ~/google-optimize-service
+        run: |
+          LIVE_VERSION=$(npm show google-optimize-service version)
+          echo "export LIVE_VERSION=${LIVE_VERSION}" >> ${BASH_ENV}
+          echo "latest published version: ${LIVE_VERSION}"
+
   setup:
     steps:
       - checkout
@@ -26,7 +48,7 @@ commands:
           paths:
             - node_modules
           key: google-optimize-service-dependencies-{{ checksum "package.json" }}
-      - extract-version
+      - extract-changelog-version
 
   create-test-project:
     steps:
@@ -54,7 +76,7 @@ commands:
       - attach_workspace:
           at: ~/google-optimize-service
       - create-test-project
-      - extract-version
+      - extract-changelog-version
       - run:
           name: install module
           working-directory: /tmp/test-app
@@ -91,19 +113,23 @@ workflows:
       - bundle-test-esm-js:
           requires:
             - bundle
-      - package-test-node-js:
-          requires:
-            - bundle
-      - package-test-esm-js:
+      - ensure-versioned-correctly:
           requires:
             - bundle
       - publish:
           requires:
+            - ensure-versioned-correctly
             - bundle-test-esm-js
             - bundle-test-node-js
           filters:
             branches:
               only: master
+      - package-test-node-js:
+          requires:
+            - publish
+      - package-test-esm-js:
+          requires:
+            - publish
 
 jobs:
   lint:
@@ -203,6 +229,25 @@ jobs:
             npm test
       - store_test_results:
           path: test-results
+
+  ensure-versioned-correctly:
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/google-optimize-service
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - extract-changelog-version
+      - extract-package-json-version
+      - extract-published-version
+      - run:
+          name: changelog matches package.json
+          command: |
+            test ${PACKAGE_JSON_VERSION} = ${CHANGELOG_VERSION}
+      - run:
+          name: changelog does not match live
+          command: |
+            test ${CHANGELOG_VERSION} != ${LIVE_VERSION}
 
   publish:
     docker:
