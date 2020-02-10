@@ -2,16 +2,20 @@
 
 [![NPM](https://nodei.co/npm/google-optimize-service.png?downloads=true)](https://nodei.co/npm/google-optimize-service/)
 
+
 [![npm version](https://badge.fury.io/js/google-optimize-service.svg)](http://badge.fury.io/js/google-optimize-service)
+
+
 [![CircleCI](https://circleci.com/gh/haensl/google-optimize-service.svg?style=svg)](https://circleci.com/gh/haensl/google-optimize-service)
 
-#### Highly customizable, universal service abstraction around Google Optimize.
+#### Highly customizable, dependency-free, universal, service abstraction around Google Optimize.
 
 google-optimize-service provides a lightweight abstraction layer around [Google Optimize](https://optimize.google.com/). It enables easy access to and management of experiment information.
 
 ## Table of Contents
 
 * [Quick Start](#quick-start)
+* [Features](#features)
 * [API](#api)
   * [autopersist()](#api-autopersist)
   * [configure()](#api-configure)
@@ -23,12 +27,16 @@ google-optimize-service provides a lightweight abstraction layer around [Google 
   * [key()](#api-key)
   * [location()](#api-location)
   * [persist()](#api-persist)
+  * [preventFlicker()](#api-prevent-flicker)
+  * [storage()](#api-storage)
+  * [storagePreference()](#api-storage-preference)
+  * [storagePreferences](#api-storage-preferences)
 * [Changelog](#changelog)
 * [License](#license)
 
 ## Quick Start<a name="quick-start"></a>
 
-1. Install google-optimize-service
+### 1. Install google-optimize-service
 
 via **npm**:
 ```bash
@@ -40,24 +48,107 @@ via **yarn**:
 yarn add google-optimize-service
 ```
 
-2. Import and use the service
 
-ESM:
+### 2. Import and use the service
+
+#### ESM<a name="quick-start-esm"></a>
 
 ```javascript
 import optimize from 'google-optimize-service';
 optimize.preventFlicker();
 
-const experiments = optmize.get();
+const experiment = optmize.get();
+/**
+ * Assuming the query parameters set by Google Optimize:
+ * ?utm_expid=69&utm_referrer=&variant=doggy
+ *
+ * experiment := {
+ *   experimentId: '69', // google optimize experiment id, i.e. utm_expid
+ *   referrer: '', // google optimize referrer, i.e. utm_referrer
+ *   variant: 'doggy' // custom set experiment variable
+ * }
+ */
 ```
 
-CommonJS
+#### CommonJS<a name="quick-start-commonjs"></a>
 
 ```javascript
 const optimize = require('google-optimize-service');
 
-const experiments = optimize.get();
+const experiment = optimize.get();
+/**
+ * Assuming the query parameters set by Google Optimize:
+ * ?utm_expid=69&utm_referrer=&variant=doggy
+ *
+ * experiment := {
+ *   experimentId: '69', // google optimize experiment id, i.e. utm_expid
+ *   referrer: '', // google optimize referrer, i.e. utm_referrer
+ *   variant: 'doggy' // custom set experiment variable
+ * }
+ */
 ```
+
+## Features<a name="features"></a>
+
+`google-optimize-service` is a highly customizable abstraction layer for [Google Optimize](https://optimize.google.com). As such it features:
+
+#### [Autodiscovery](#api-discover) of the environment.
+
+If run in a browser, `google-optimize-service` will automatically find the query parameters and check for available [storage](#api-storage) APIs to persist experiment data. If you're working in a non-browser environment, however, you can [tell `google-optimize-service` where to find URL query parameters](#api-location) and [how to persist experiment data](#api-storage).
+
+#### [Custom fields](#api-fields) carrying your experiment variables.
+
+By default `google-optimize-service` is setup to extract a `variant` from the URL. If your experiment, however, requires a more complex setup, e.g. with multiple or differently named experiment variables, [you can tell `google-optimize-service` which query parameters belong to your experiment](#api-fields).
+
+#### [Auto-persistance](#api-persist) of experiment data.
+
+To ensure your users will always see the same variant of your application, `google-optimize-service` by default [automatically persists](#api-autopersist) experiment data. Of course you can prevent persistance or employ your own [storage strategies](#api-storage) as you see fit.
+
+#### [Flicker prevention](#api-prevent-flicker): anti-flicker snippet.
+
+No need to manually add the [anti-flicker snippet](https://support.google.com/optimize/answer/7100284?hl=en) to your page, [`google-optimize-service`'s got you covered](#api-prevent-flicker).
+
+#### Supports multiple experiments.
+
+By employing persistance and discovery strategies, `google-optimize-service` facilitates work in an agile environment where change is frequent and/or multiple Optimize experiments run in parallel. This can help reduce the amount of work necessary to refactor experiment implementations.
+
+#### Universal.
+
+Whether you work on a [ESM powered SPA](#quick-start-esm) or in a [CommonJS powered Node.js project](#quick-start-commonjs) `google-optimize-service` has your back. It works with any modern JavaScript source base.
+
+#### Lightweight and dependency-free.
+
+`google-optimize-service` is implemented in a resource preserving manner and introduces zero additional production dependencies.
+
+## Customization
+
+`google-optimize-service` can be adjusted to your needs via a multitude of settings documented [in the API section](#api).
+
+This is what it's default configuration looks like:
+
+```javascript
+{
+  autopersist: true, // customize via autopersist().
+  fields: [ // customize via fields().
+    'variant'
+  ],
+  key: 'optimize', // customize via key().
+  location: { // customize via location(). location is subject to autodiscovery.
+    search: ''
+  },
+  storage: null, // customize via storage(). storage is subject to autodiscovery.
+  storagePreference: storagePreferences.localStorage // customize via storagePreference().
+}
+```
+
+All configuration is customizable:
+
+* [autopersist()](#api-autopersist)
+* [fields()](#api-fields)
+* [location()](#api-location)
+* [key()](#api-key)
+* [storage()](#api-storage)
+* [storagePreference()](#api-storage-preference)
 
 
 ## API<a name="api"></a>
@@ -119,7 +210,7 @@ const experiment = optimize.get();
 
 ### `currentExperimentId()`<a name="api-currentexperimentid"></a>
 
-Returns the [`utm_expid`](https://support.google.com/optimize/answer/6361119) of the current experiment.
+Returns the [`utm_expid`](https://support.google.com/optimize/answer/6361119) of the current, i.e. as set in the URL query parameters, experiment.
 
 #### Example
 
@@ -302,6 +393,101 @@ const experiments = optimize.get(null);
 optimize.persist(experiments);
 ```
 
+### `preventFlicker([timeout],[intervalMs])`<a name="api-prevent-flicker"></a>
+
+Installs the [anti-flicker snippet](https://support.google.com/optimize/answer/7100284?hl=en).
+
+#### Arguments
+
+`timeout` *optional* - Timeout to wait for Google Analytics in milliseconds. **Default**: `2000`.
+
+`intervalMs` *optional* - Interval in which to check for Google Analytics in milliseconds. **Default**: `10`.
+
+#### Example
+
+```javascript
+const optimize = require('google-optimize-service');
+
+optimize.preventFlicker();
+```
+
+### `storage([newStorage])`<a name="api-storage"></a>
+
+Sets and returns the storage implementation to use.
+
+If called without parameter, it returns the currently set storage engine.
+
+By default `google-optimize-service` tries to discover available storage mechanisms and configures itself accoringly. E.g. if run in a browser, `google-optimize-service` can discover that both `localStorage` and `sessionStorage` are available on the `window` object. Depending on the set [`storagePreference`](#api-storage-preference), it configures itself to use one of those when [`discover()`](#api-discover)ing.
+
+Supplying your own storage engine to use for [`persist()`](#api-persist)ing experiments, can come handy when working in non-browser environments. See the [examples section](#api-storage-examples) for illustration.
+
+#### Arguments
+
+`newStorage` *optional* - A storage engine to use when [persist()](#api-persist)ing experiment data. `newStorage` an be any custom storage solution implementing at least a minimum set of `setItem()` and `getItem()` from the [web storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage).
+
+#### Example
+
+Explicitly using `sessionStorage`
+
+```javascript
+const optimize = require('google-optimize-service');
+
+optimize.storage(window.sessionStorage);
+optimize.persist(optimize.get(null));
+```
+
+Using a custom storage engine
+
+```javascript
+const optimize = require('google-optimize-service');
+
+const _store = {};
+const store = {
+  setItem: (key, value) => {
+    _store[key] = value;
+  },
+  getItem: (key) => _store[key]
+};
+
+optimize.storage(store);
+optimize.persist(optimize.get(null));
+```
+
+
+### `storagePreference([newPreference])`<a name="api-storage-preference"></a>
+
+#### default: `optimize.storagePreferences.localStorage`
+
+Sets the [storage preference](#api-storage-preferences) to use when deciding between `local`- and `sessionStorage` during [`discover()`](#api-discover).
+
+If called without parameter, returns the current storage preference.
+
+#### Arguments
+
+`newPreference` *optional* - The storage preference to use. This should be one of the constants provided via [storagePreferences](#api-storage-preferences).
+
+#### Example
+
+```javascript
+const optimize = require('google-optimize-service');
+
+optimize.storagePreference(optimize.storagePreferences.sessionStorage);
+optimize.discover();
+optimize.persist(optimize.get(null));
+```
+
+
+### `storagePreferences`<a name="api-storage-preferences"></a>
+
+Map of available storage preferences to be used with [`storagePreference()`](#api-storage-preference).
+
+Currently available storage preferences:
+
+`storagePreferences.localStorage` prefers `localStorage` over `sessionStorage`.
+
+`storagePreferences.sessionStorage` prefers `sessionStorage` over `localStorage`.
+
+#### `storagePreferences` constitute only a hint. I.e. if the storage preference is set to `sessionStorage` but only `localStorage` is available, `google-optimize-service` will pick `localStorage`.
 
 
 ### [Changelog](CHANGELOG.md)<a name="changelog"></a>
