@@ -5,6 +5,7 @@ commands:
     steps:
       - run:
           name: extract version
+          working_directory: ~/google-optimize-service
           command: |
             VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
             echo "export VERSION=${VERSION}" >> $BASH_ENV
