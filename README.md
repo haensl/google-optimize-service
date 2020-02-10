@@ -423,7 +423,7 @@ Supplying your own storage engine to use for [`persist()`](#api-persist)ing expe
 
 #### Arguments
 
-`newStorage` *optional* - A storage engine to use when [persist()](#api-persist)ing experiment data. `newStorage` an be any custom storage solution implementing at least a minimum set of `setItem()` and `getItem()` from the [web storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage).
+`newStorage` *optional* - A storage engine to use when [persist()](#api-persist)ing experiment data. `newStorage` can be any custom storage solution implementing at least a minimum set of `setItem()` and `getItem()` from the [web storage API](https://developer.mozilla.org/en-US/docs/Web/API/Storage).
 
 #### Example
 
@@ -441,22 +441,22 @@ Using a custom storage engine
 ```javascript
 const optimize = require('google-optimize-service');
 
-const _store = {};
-const store = {
-  setItem: (key, value) => {
-    _store[key] = value;
-  },
-  getItem: (key) => _store[key]
-};
+const store = {};
 
-optimize.storage(store);
+optimize.storage({
+  setItem: (key, value) => {
+    store[key] = value;
+  },
+  getItem: (key) => store[key]
+});
+
 optimize.persist(optimize.get(null));
 ```
 
 
 ### `storagePreference([newPreference])`<a name="api-storage-preference"></a>
 
-#### default: `optimize.storagePreferences.localStorage`
+#### default: [`optimize.storagePreferences.localStorage`](#api-storage-preferences)
 
 Sets the [storage preference](#api-storage-preferences) to use when deciding between `local`- and `sessionStorage` during [`discover()`](#api-discover).
 
