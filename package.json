@@ -12,8 +12,7 @@
     "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --testPathIgnorePatterns=/package-tests/ --reporters='jest-junit' --passWithNoTests",
     "tdd": "jest --env=jsdom --watch",
     "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
-    "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\"",
-    "prepublishOnly": "npm run build"
+    "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\""
   },
   "jest-junit": {
     "outputDirectory": "test-results/jest",
