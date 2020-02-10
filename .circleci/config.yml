@@ -25,12 +25,12 @@ commands:
   extract-published-version:
     steps:
       - run:
-        name: extract latest published version
-        working_directory: ~/google-optimize-service
-        command: |
-          LIVE_VERSION=$(npm show google-optimize-service version)
-          echo "export LIVE_VERSION=${LIVE_VERSION}" >> ${BASH_ENV}
-          echo "latest published version: ${LIVE_VERSION}"
+          name: extract latest published version
+          working_directory: ~/google-optimize-service
+          command: |
+            LIVE_VERSION=$(npm show google-optimize-service version)
+            echo "export LIVE_VERSION=${LIVE_VERSION}" >> ${BASH_ENV}
+            echo "latest published version: ${LIVE_VERSION}"
 
   setup:
     steps:
