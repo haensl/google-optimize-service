@@ -1,6 +1,14 @@
 # https://circleci.com/docs/2.1/language-javascript/
 version: 2.1
 commands:
+  extract-version:
+    steps:
+      - run:
+          name: extract version
+          command: |
+            VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
+            echo "export VERSION=${VERSION}" >> $BASH_ENV
+            echo "building version: ${VERSION}"
   setup:
     steps:
       - checkout
@@ -18,16 +26,10 @@ commands:
           paths:
             - node_modules
           key: google-optimize-service-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: extract version
-          command: |
-            VERSION=$(head -n1 CHANGELOG.md | grep -o '\([0-9]\+\.\)\{2\}[0-9]\+')
-            echo "export VERSION=${VERSION}" >> $BASH_ENV
-            echo "building version: ${VERSION}"
-  bundle-test-setup:
+      - extract-version
+
+  create-test-project:
     steps:
-      - attach_workspace:
-          at: ~/google-optimize-service
       - run:
           working-directory: /tmp
           name: create test application
@@ -35,12 +37,29 @@ commands:
             mkdir test-app
             cd test-app
             npm init -y
+
+  bundle-test-setup:
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - create-test-project
       - run:
           name: install module
           working-directory: /tmp/test-app
           command: |
             npm i -S ~/google-optimize-service
 
+  package-test-setup:
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - create-test-project
+      - extract-version
+      - run:
+          name: install module
+          working-directory: /tmp/test-app
+          command: |
+            npm i -S google-optimize-service@${VERSION}
 
 workflows:
   version: 2
@@ -59,9 +78,11 @@ workflows:
       - bundle-test-esm-js:
           requires:
             - bundle
-      - publish:
+      - package-test-node-js:
           requires:
             - bundle
+      - publish:
+          requires:
             - bundle-test-esm-js
             - bundle-test-node-js
           filters:
@@ -119,6 +140,7 @@ jobs:
             - LICENSE
             - package.json
             - package-lock.json
+            - .npmignore
 
   bundle-test-node-js:
     docker:
@@ -131,8 +153,6 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
-      - store_test_results:
-          path: test-results
 
   bundle-test-esm-js:
     docker:
@@ -185,3 +205,23 @@ jobs:
       - run:
           name: publish node module
           command: npm publish
+
+  package-test-node-js:
+    docker:
+      - image: circleci/node:lts
+    working_directory: /tmp/test-app
+    steps:
+      - package-test-setup
+      - run:
+          name: test node.js module
+          command: |
+            cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
+            node node.test.js
+      - run:
+          name: install tree
+          command: sudo apt-get -y install tree
+      - run:
+          name: gather bundle information
+          command: tree -s node_modules/google-optimize-service > ./bundle.info
+      - store_artifacts:
+          path: bundle.info
