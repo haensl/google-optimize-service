@@ -1,4 +1,4 @@
-## 1.0.0
+## 1.1.0
 * [#9: Add test for deployed module.](https://github.com/haensl/google-optimize-service/issues/9)
 
 ## 1.0.0
