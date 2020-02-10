@@ -1,6 +1,6 @@
 {
   "name": "google-optimize-service",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Highly customizable, dependency-free, universal, service abstraction around Google Optimize.",
   "main": "lib/google-optimize-service.node.js",
   "module": "lib/google-optimize-service.esm.js",
