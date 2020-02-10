@@ -247,7 +247,7 @@ jobs:
       - run:
           name: pacakge.json greater than live
           command: |
-            node -e \<<VERSION_CHECK
+            node \<<VERSION_CHECK
             const pkgVersion = require('./package').version
               .split('.')
               .map((i) => parseInt(i, 10));
