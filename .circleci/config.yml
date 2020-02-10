@@ -245,10 +245,22 @@ jobs:
           command: |
             test ${PACKAGE_JSON_VERSION} = ${CHANGELOG_VERSION}
       - run:
-          name: changelog does not match live
+          name: pacakge.json greater than live
           command: |
-            test ${CHANGELOG_VERSION} != ${LIVE_VERSION}
-
+            node -e <<VERSION_CHECK
+            const pkgVersion = require('./package').version
+              .split('.')
+              .map((i) => parseInt(i, 10));
+            const liveVersion = process.env.LIVE_VERSION
+              .split('.')
+              .map((i) => parseInt(i, 10));
+            const isGreater = pkgVersion.reduce((isGreater, part, i) => {
+              return isGreater || (part > liveVersion[i]);
+            }, false);
+            if (!isGreater) {
+              process.exit(1);
+            }
+            VERSION_CHECK
   publish:
     docker:
       - image: circleci/node:lts
