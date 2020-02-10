@@ -17,7 +17,7 @@ commands:
       - run:
           name: extract package.json version
           working_directory: ~/google-optimize-service
-          run: |
+          command: |
             PACKAGE_JSON_VERSION=$(node -e "console.info(require('./package').version)")
             echo "export PACKAGE_JSON_VERSION=${PACKAGE_JSON_VERSION}" >> $BASH_ENV
             echo "package.json version: ${PACKAGE_JSON_VERSION}"
@@ -27,7 +27,7 @@ commands:
       - run:
         name: extract latest published version
         working_directory: ~/google-optimize-service
-        run: |
+        command: |
           LIVE_VERSION=$(npm show google-optimize-service version)
           echo "export LIVE_VERSION=${LIVE_VERSION}" >> ${BASH_ENV}
           echo "latest published version: ${LIVE_VERSION}"
