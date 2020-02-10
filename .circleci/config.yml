@@ -44,7 +44,7 @@ commands:
 
 workflows:
   version: 2
-  test:
+  default:
     when: always
     jobs:
       - lint
@@ -59,6 +59,14 @@ workflows:
       - bundle-test-esm-js:
           requires:
             - bundle
+      - publish:
+          requires:
+            - bundle
+            - bundle-test-esm-js
+            - bundle-test-node-js
+          filters:
+            branches:
+              only: master
 
 jobs:
   lint:
@@ -160,3 +168,20 @@ jobs:
             npm test
       - store_test_results:
           path: test-results
+
+  publish:
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/google-optimize-service
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - run:
+          name: update npm
+          command: sudo npm install -g npm@latest
+      - run:
+          name: setup npm registry token
+          command: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - run:
+          name: publish node module
+          command: npm publish
