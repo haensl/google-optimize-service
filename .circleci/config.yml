@@ -261,6 +261,7 @@ jobs:
               process.exit(1);
             }
             VERSION_CHECK
+
   publish:
     docker:
       - image: circleci/node:lts
