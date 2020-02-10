@@ -19,7 +19,6 @@ commands:
       - restore_cache:
           keys:
             - google-optimize-service-dependencies-{{ checksum "package.json" }}
-            - google-optimize-service-dependencies-
       - run:
           name: install dependencies
           command: npm install
@@ -187,7 +186,6 @@ jobs:
       - restore_cache:
           keys:
             - google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
-            - google-optimize-service-esm-module-test-dependencies-
       - run:
           name: install dependencies
           command: npm install
@@ -252,7 +250,6 @@ jobs:
       - restore_cache:
           keys:
             - google-optimize-service-esm-module-test-dependencies-{{ checksum "package.json" }}
-            - google-optimize-service-esm-module-test-dependencies-
       - run:
           name: install dependencies
           command: npm install
