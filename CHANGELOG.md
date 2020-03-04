@@ -1,3 +1,6 @@
+## 1.1.1
+* [#14: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/14)
+
 ## 1.1.0
 * [#9: Add test for deployed module.](https://github.com/haensl/google-optimize-service/issues/9)
 
