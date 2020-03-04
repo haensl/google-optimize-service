@@ -40,14 +40,14 @@ commands:
           command: sudo npm install -g npm@latest
       - restore_cache:
           keys:
-            - google-optimize-service-dependencies-{{ checksum "package.json" }}
+            - google-optimize-service-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: install dependencies
           command: npm install
       - save_cache:
           paths:
             - node_modules
-          key: google-optimize-service-dependencies-{{ checksum "package.json" }}
+          key: google-optimize-service-dependencies-{{ checksum "package-lock.json" }}
       - extract-changelog-version
 
   create-test-project:

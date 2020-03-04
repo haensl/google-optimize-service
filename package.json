@@ -7,7 +7,7 @@
   "unpkg": "lib/google-optimize-service.min.js",
   "jsdelivr": "lib/google-optimize-service.min.js",
   "scripts": {
-    "build": "npm i && rollup -c",
+    "build": "rollup -c",
     "test": "jest --testPathIgnorePatterns=/package-tests/ --env=jsdom",
     "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --testPathIgnorePatterns=/package-tests/ --reporters='jest-junit' --passWithNoTests",
     "tdd": "jest --env=jsdom --watch",
