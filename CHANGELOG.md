@@ -1,3 +1,6 @@
+## 1.1.2
+* [#17: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/17)
+
 ## 1.1.1
 * [#14: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/14)
 * Use package-lock checksum in cache key.
