@@ -1,8 +1,10 @@
 import ascii from 'rollup-plugin-ascii';
-import node from 'rollup-plugin-node-resolve';
-import builtins from 'rollup-plugin-node-builtins';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import commonJS from '@rollup/plugin-commonjs';
+import external from 'rollup-plugin-peer-deps-external';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import { terser } from 'rollup-plugin-terser';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import * as pkg from './package.json';
 
 const copyright = `// ${pkg.homepage} v${pkg.version} Copyright ${(new Date()).getFullYear()} ${pkg.author.name}`;
@@ -10,118 +12,133 @@ const copyright = `// ${pkg.homepage} v${pkg.version} Copyright ${(new Date()).g
 export default [
   {
     input: 'src/google-optimize-service',
-    plugins: [
-      builtins(),
-      babel({
-        babelrc: false,
-        exclude: 'node_modules/**',
-        presets: [
-          [
-            '@babel/preset-env',
-            {
-              targets: {
-                browsers: [
-                  'defaults'
-                ]
-              }
-            }
-          ]
-        ]
-      }),
-      node(),
-      ascii()
-    ],
     output: {
-      extend: true,
+      esModule: false,
+      exports: 'named',
+      file: pkg.unpkg,
+      format: 'umd',
       banner: copyright,
-      file: 'lib/google-optimize-service.js',
-      format: 'umd',
-      indent: false,
-      name: pkg.name
-    }
-  },
-  {
-    input: 'src/google-optimize-service',
+      name: pkg.name,
+      indent: false
+    },
     plugins: [
-      builtins(),
+      ascii(),
       babel({
         babelrc: false,
-        exclude: 'node_modules/**',
+        exclude: [
+          'node_modules/**',
+          '**/*.test.js'
+        ],
+        babelHelpers: 'bundled',
         presets: [
           [
             '@babel/preset-env',
             {
-              targets: {
-                browsers: [
-                  'defaults'
-                ]
-              }
+              modules: false
             }
           ]
         ]
       }),
-      node(),
-      ascii(),
-      terser({
-        output: {
-          preamble: copyright
-        }
-      })
-    ],
-    output: {
-      extend: true,
-      file: 'lib/google-optimize-service.min.js',
-      format: 'umd',
-      indent: false,
-      name: pkg.name
-    }
+      nodePolyfills(),
+      nodeResolve(),
+      external(),
+      commonJS({
+        include: 'node_modules/**'
+      }),
+      terser()
+    ]
   },
   {
     input: 'src/google-optimize-service',
+    output: [
+      {
+        file: pkg.module,
+        format: 'esm',
+        banner: copyright,
+        indent: false,
+        name: pkg.name,
+        sourcemap: true
+      }
+    ],
     plugins: [
-      builtins(),
+      ascii(),
       babel({
         babelrc: false,
-        exclude: 'node_modules/**',
+        exclude: [
+          'node_modules/**',
+          '**/*.test.js'
+        ],
+        babelHelpers: 'runtime',
         presets: [
           [
             '@babel/preset-env',
             {
+              modules: false,
               targets: {
                 esmodules: true
               }
             }
-          ]
+          ],
+        ],
+        plugins: [
+          '@babel/plugin-transform-runtime'
         ]
       }),
-      node(),
-      ascii()
-    ],
-    output: {
-      extend: true,
-      banner: copyright,
-      file: 'lib/google-optimize-service.esm.js',
-      format: 'esm',
-      indent: false,
-      name: pkg.name
-    }
+      nodePolyfills(),
+      nodeResolve(),
+      external(),
+      commonJS({
+        include: 'node_modules/**'
+      }),
+      terser()
+    ]
   },
   {
     input: 'src/google-optimize-service',
+    output: [
+      {
+        file: pkg.main,
+        format: 'cjs',
+        name: pkg.name,
+        indent: false,
+        banner: copyright,
+        exports: 'named',
+        sourcemap: true
+      }
+    ],
     external: [
       'querystring'
     ],
     plugins: [
-      node(),
-      ascii()
-    ],
-    output: {
-      extend: true,
-      banner: copyright,
-      file: 'lib/google-optimize-service.node.js',
-      format: 'cjs',
-      indent: false,
-      name: pkg.name
-    }
+      ascii(),
+      babel({
+        babelrc: false,
+        exclude: [
+          'node_modules/**',
+          '**/*.test.js'
+        ],
+        babelHelpers: 'runtime',
+        presets: [
+          [
+            '@babel/preset-env',
+            {
+              modules: false,
+              targets: {
+                node: true
+              }
+            }
+          ]
+        ],
+        plugins: [
+          '@babel/plugin-transform-runtime'
+        ]
+      }),
+      nodeResolve(),
+      external(),
+      commonJS({
+        include: 'node_modules/**'
+      }),
+      terser()
+    ]
   }
 ];
