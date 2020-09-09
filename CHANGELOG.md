@@ -1,3 +1,7 @@
+## 1.1.3
+* [#22: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/22)
+* Refactor rollup configuration.
+
 ## 1.1.2
 * [#17: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/17)
 

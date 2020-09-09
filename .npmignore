@@ -1,7 +1,10 @@
-.*
-**/*.test.js
-*.md
-jest.config.js
-rollup.*
+__snapshots__/
+coverage/
 src/
 test-results/
+.*
+*.test.js
+*.md
+*.config.js
+*.setup.js
+*.tgz
