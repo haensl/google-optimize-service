@@ -17,7 +17,6 @@ export default [
       exports: 'named',
       file: pkg.unpkg,
       format: 'umd',
-      banner: copyright,
       name: pkg.name,
       indent: false
     },
@@ -45,16 +44,22 @@ export default [
       commonJS({
         include: 'node_modules/**'
       }),
-      terser()
+      terser({
+        output: {
+          preamble: copyright
+        }
+      })
     ]
   },
   {
+    external: [
+      /@babel\/runtime/
+    ],
     input: 'src/google-optimize-service',
     output: [
       {
         file: pkg.module,
         format: 'esm',
-        banner: copyright,
         indent: false,
         name: pkg.name,
         sourcemap: true
@@ -73,12 +78,11 @@ export default [
           [
             '@babel/preset-env',
             {
-              modules: false,
               targets: {
                 esmodules: true
               }
             }
-          ],
+          ]
         ],
         plugins: [
           '@babel/plugin-transform-runtime'
@@ -90,7 +94,11 @@ export default [
       commonJS({
         include: 'node_modules/**'
       }),
-      terser()
+      terser({
+        output: {
+          preamble: copyright
+        }
+      })
     ]
   },
   {
@@ -101,13 +109,13 @@ export default [
         format: 'cjs',
         name: pkg.name,
         indent: false,
-        banner: copyright,
         exports: 'named',
         sourcemap: true
       }
     ],
     external: [
-      'querystring'
+      'querystring',
+      /@babel\/runtime/
     ],
     plugins: [
       ascii(),
@@ -122,7 +130,6 @@ export default [
           [
             '@babel/preset-env',
             {
-              modules: false,
               targets: {
                 node: true
               }
@@ -138,7 +145,11 @@ export default [
       commonJS({
         include: 'node_modules/**'
       }),
-      terser()
+      terser({
+        output: {
+          preamble: copyright
+        }
+      })
     ]
   }
 ];
