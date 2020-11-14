@@ -1,6 +1,7 @@
 ## 1.1.4
 * [#24: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/24)
 * Externalize `@babel/runtime` for ESM and CJS bundle.
+* Automate Github release.
 
 ## 1.1.3
 * [#22: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/22)

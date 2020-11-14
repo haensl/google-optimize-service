@@ -32,6 +32,12 @@ commands:
             echo "export LIVE_VERSION=${LIVE_VERSION}" >> ${BASH_ENV}
             echo "latest published version: ${LIVE_VERSION}"
 
+  extract-versions:
+    steps:
+      - extract-changelog-version
+      - extract-package-json-version
+      - extract-published-version
+
   setup:
     steps:
       - checkout
@@ -104,6 +110,10 @@ workflows:
       - lint
       - test
       - bundle:
+          requires:
+            - lint
+            - test
+      - pack:
           requires:
             - lint
             - test
@@ -183,6 +193,28 @@ jobs:
             - package.json
             - package-lock.json
             - .npmignore
+
+  pack:
+    docker:
+      - image: circleci/node:lts
+    working_directory: ~/google-optimize-service
+    steps:
+      - setup
+      - extract-versions
+      - run:
+          name: pack
+          environment:
+            NODE_ENV: 'production'
+          command: npm pack
+      - run:
+          name: rename to unversioned package
+          command: cp "google-optimize-service-${VERSION}.tgz" 'google-optimize-service.tgz'
+      - store_artifacts:
+          path: google-optimize-service.tgz
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - google-optimize-service.tgz
 
   bundle-test-node-js:
     docker:
@@ -326,4 +358,21 @@ jobs:
       - store_test_results:
           path: test-results
       - package-information
+
+  publish-github-release:
+    docker:
+      - image: cibuilds/github
+    steps:
+      - attach_workspace:
+          at: ~/google-optimize-service
+      - extract-changelog-version
+      - run:
+          name: publish github release
+          working_directory: ~/google-optimize-service
+          command: |
+            cp ./google-optimize-service.tgz ./google-optimize-service-${VERSION}.tgz
+            CHANGES=$(awk "/## ${VERSION}/,/^$/" CHANGELOG.md)
+            echo "Publishing release v${VERSION} to Github.\nChanges:"
+            echo $CHANGES
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete -n "v${VERSION}" -b "${CHANGES}" "v${VERSION}" ./google-optimize-service-${VERSION}.tgz
 
