@@ -146,7 +146,7 @@ workflows:
       - publish-github-release:
           requires:
             - package-test-esm-js
-            - package-test-cjs-js
+            - package-test-node-js
 
 jobs:
   lint:
