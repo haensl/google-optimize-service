@@ -120,12 +120,15 @@ workflows:
       - bundle-test-node-js:
           requires:
             - bundle
+            - pack
       - bundle-test-esm-js:
           requires:
             - bundle
+            - pack
       - ensure-versioned-correctly:
           requires:
             - bundle
+            - pack
       - publish:
           requires:
             - ensure-versioned-correctly
@@ -140,6 +143,10 @@ workflows:
       - package-test-esm-js:
           requires:
             - publish
+      - publish-github-release:
+          requires:
+            - package-test-esm-js
+            - package-test-cjs-js
 
 jobs:
   lint:
