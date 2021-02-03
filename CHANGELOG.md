@@ -1,3 +1,6 @@
+## 1.1.6
+* [#27: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/27)
+
 ## 1.1.5
 * Enable automated Github release.
 
