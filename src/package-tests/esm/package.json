@@ -1,13 +1,15 @@
 {
   "name": "google-optimize-service-esm-module-test",
-  "version": "1.0.0",
+  "version": "1.1.8",
   "description": "",
   "scripts": {
     "test": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit'"
   },
   "babel": {
     "presets": [
-      [ "@babel/preset-env" ]
+      [
+        "@babel/preset-env"
+      ]
     ]
   },
   "jest-junit": {
@@ -21,8 +23,8 @@
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "babel-jest": "^25.1.0",
-    "jest": "^25.1.0",
-    "jest-junit": "^10.0.0"
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3",
+    "jest-junit": "^12.0.0"
   }
 }
