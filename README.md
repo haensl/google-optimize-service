@@ -8,7 +8,7 @@
 
 [![CircleCI](https://circleci.com/gh/haensl/google-optimize-service.svg?style=svg)](https://circleci.com/gh/haensl/google-optimize-service)
 
-#### Highly customizable, dependency-free, universal, service abstraction around Google Optimize.
+#### Highly customizable, lightweight, universal, service abstraction around Google Optimize.
 
 google-optimize-service provides a lightweight abstraction layer around [Google Optimize](https://optimize.google.com/). It enables easy access to and management of experiment information.
 
@@ -116,9 +116,9 @@ By employing persistance and discovery strategies, `google-optimize-service` fac
 
 Whether you work on a [ESM powered SPA](#quick-start-esm) or in a [CommonJS powered Node.js project](#quick-start-commonjs) `google-optimize-service` has your back. It works with any modern JavaScript source base.
 
-#### Lightweight and dependency-free.
+#### Lightweight.
 
-`google-optimize-service` is implemented in a resource preserving manner and introduces zero additional production dependencies.
+`google-optimize-service` is implemented in a resource preserving manner and introduces minimal additional production dependencies.
 
 ## Customization
 
