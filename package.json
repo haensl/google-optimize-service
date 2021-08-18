@@ -15,6 +15,11 @@
     "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
     "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\""
   },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "clearMocks": true,
+    "coverageDirectory": "coverage"
+  },
   "jest-junit": {
     "outputDirectory": "test-results/jest",
     "outputName": "results.xml",
