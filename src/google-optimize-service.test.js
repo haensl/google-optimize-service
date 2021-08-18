@@ -182,6 +182,9 @@ describe('google-optimize-service', () => {
           describe('and window.location changes', () => {
             beforeEach(() => {
               window.location.search = '?variant=cursor&utm_expid=2';
+            });
+
+            it('updates the search object', () => {
               expect(optimize.location()).toHaveProperty('search', '?variant=cursor&utm_expid=2');
             });
           });
@@ -270,13 +273,6 @@ describe('google-optimize-service', () => {
 
           it('returns the window.localStorage object', () => {
             expect(optimize.storage()).toHaveProperty('setItem', localStorageMock.mock.setItem);
-          });
-
-          describe('and window.location changes', () => {
-            beforeEach(() => {
-              window.location.search = '?variant=cursor&utm_expid=2';
-              expect(optimize.location()).toHaveProperty('search', '?variant=cursor&utm_expid=2');
-            });
           });
         });
       });
