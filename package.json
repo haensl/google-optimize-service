@@ -14,7 +14,7 @@
     "tdd": "jest --env=jsdom --watch",
     "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
     "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\"",
-    "prepare": "husky install"
+    "prepare": "if [ ${NODE_ENV} == 'production' ]; then husky install; fi"
   },
   "jest": {
     "testEnvironment": "jsdom",
