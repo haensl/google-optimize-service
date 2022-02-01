@@ -1,6 +1,6 @@
 {
   "name": "google-optimize-service",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "Highly customizable, dependency-free, universal, service abstraction around Google Optimize.",
   "main": "lib/google-optimize-service.cjs.js",
   "module": "lib/google-optimize-service.esm.js",
@@ -9,12 +9,12 @@
   "scripts": {
     "build": "npm run clean && rollup -c",
     "clean": "rimraf ./dist",
-    "test": "jest --testPathIgnorePatterns=/package-tests/ --env=jsdom",
-    "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --testPathIgnorePatterns=/package-tests/ --reporters='jest-junit' --passWithNoTests",
-    "tdd": "jest --env=jsdom --watch",
     "lint": "eslint -c .eslintrc.json \"!(lib)/**/*.js\"",
     "lint:ci": "eslint --format junit -o test-results/eslint/results.xml -c .eslintrc.json \"!(lib)/**/*.js\"",
-    "prepare": "if [ ${NODE_ENV} != 'production' ]; then husky install; fi"
+    "prepare": "if [ ${NODE_ENV} != 'production' ]; then husky install; fi",
+    "test": "jest --testPathIgnorePatterns=/package-tests/ --env=jsdom",
+    "test:ci": "jest --runInBand --no-cache --ci --reporters='default' --testPathIgnorePatterns=/package-tests/ --reporters='jest-junit' --passWithNoTests",
+    "tdd": "jest --env=jsdom --watch"
   },
   "jest": {
     "testEnvironment": "jsdom",
@@ -25,12 +25,6 @@
     "outputDirectory": "test-results/jest",
     "outputName": "results.xml",
     "suitName": "google-optimize-service unit tests"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm test",
-      "post-pull": "npm i"
-    }
   },
   "repository": {
     "type": "git",
