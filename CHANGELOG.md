@@ -1,3 +1,6 @@
+## 1.1.15
+* [#51: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/51)
+
 ## 1.1.14
 * [#43: Update dependencies.](https://github.com/haensl/google-optimize-service/issues/43)
 
