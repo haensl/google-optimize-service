@@ -1,6 +1,6 @@
 {
   "name": "google-optimize-service-esm-module-test",
-  "version": "1.1.15",
+  "version": "1.1.18",
   "description": "",
   "scripts": {
     "test": "jest --runInBand --no-cache --ci --reporters='default' --reporters='jest-junit'"
