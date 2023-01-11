@@ -1,15 +1,15 @@
-import ascii from 'rollup-plugin-ascii';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import commonJS from '@rollup/plugin-commonjs';
-import external from 'rollup-plugin-peer-deps-external';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
-import { terser } from 'rollup-plugin-terser';
-import babel from '@rollup/plugin-babel';
-import * as pkg from './package.json';
+const  ascii =  require('rollup-plugin-ascii');
+const nodeResolve = require('@rollup/plugin-node-resolve');
+const  commonJS =  require('@rollup/plugin-commonjs');
+const external = require('rollup-plugin-peer-deps-external');
+const nodePolyfills = require('rollup-plugin-node-polyfills');
+const terser = require('@rollup/plugin-terser');
+const babel = require('@rollup/plugin-babel');
+const pkg = require('./package.json');
 
 const copyright = `// ${pkg.homepage} v${pkg.version} Copyright ${(new Date()).getFullYear()} ${pkg.author.name}`;
 
-export default [
+module.exports = [
   {
     input: 'src/google-optimize-service',
     output: {
