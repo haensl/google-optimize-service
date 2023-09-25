@@ -89,19 +89,6 @@ commands:
           command: |
             npm i -S google-optimize-service@${VERSION}
 
-  package-information:
-    steps:
-      - run:
-          name: install tree
-          command: sudo apt-get -y install tree
-      - run:
-          name: gather bundle information
-          command: |
-            npm info google-optimize-service@${VERSION} > ./bundle.info
-            tree -s node_modules/google-optimize-service >> ./bundle.info
-      - store_artifacts:
-          path: bundle.info
-
 workflows:
   version: 2
   default:
@@ -151,7 +138,7 @@ workflows:
 jobs:
   lint:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - setup
@@ -166,7 +153,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - setup
@@ -178,7 +165,7 @@ jobs:
 
   bundle:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - setup
@@ -203,7 +190,7 @@ jobs:
 
   pack:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - setup
@@ -225,7 +212,7 @@ jobs:
 
   bundle-test-node-js:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: /tmp/test-app
     steps:
       - bundle-test-setup
@@ -237,7 +224,7 @@ jobs:
 
   bundle-test-esm-js:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: /tmp/test-app
     steps:
       - bundle-test-setup
@@ -271,7 +258,7 @@ jobs:
 
   ensure-versioned-correctly:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - attach_workspace:
@@ -303,7 +290,7 @@ jobs:
 
   publish:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: ~/google-optimize-service
     steps:
       - attach_workspace:
@@ -320,7 +307,7 @@ jobs:
 
   package-test-node-js:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: /tmp/test-app
     steps:
       - package-test-setup
@@ -329,11 +316,10 @@ jobs:
           command: |
             cp ~/google-optimize-service/src/package-tests/node/node.test.js ./
             node node.test.js
-      - package-information
 
   package-test-esm-js:
     docker:
-      - image: circleci/node:lts
+      - image: cimg/node:lts
     working_directory: /tmp/test-app
     steps:
       - package-test-setup
@@ -364,7 +350,6 @@ jobs:
             npm test
       - store_test_results:
           path: test-results
-      - package-information
 
   publish-github-release:
     docker:
